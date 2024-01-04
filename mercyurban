@@ -1,0 +1,72 @@
+import sqlite3
+
+def create_table():
+    conn = sqlite3.connect('todo.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS tasks
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  task TEXT NOT NULL,
+                  status TEXT NOT NULL)''')
+    conn.commit()
+    conn.close()
+
+def add_task(task):
+    conn = sqlite3.connect('todo.db')
+    c = conn.cursor()
+    c.execute("INSERT INTO tasks (task, status) VALUES (?, ?)",'Incomplete'))
+    conn.commit()
+    conn.close()
+
+def edit_task(id, task):
+    conn = sqlite3.connect('todo.db')
+    c = conn.cursor()
+    c.execute("UPDATE tasks SET task = ? WHERE id = ?", (task, id))
+    conn.commit()
+    conn.close()
+def delete_task(id):
+    conn = sqlite3.connect('todo.db')
+    c = conn.cursor()
+    c.execute("DELETE FROM tasks WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+
+def get_tasks():
+    conn = sqlite3.connect('todo.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM tasks")
+    tasks = c.fetchall()
+    conn.close()
+return tasks
+
+def print_tasks():
+    tasks = get_tasks()
+    for task in tasks:
+        print(f"{task[0]}. {task[1]} - {task[2]}")
+
+def main():
+    create_table()
+    while True:
+        print("1. Add task")
+        print("2. Edit task")
+        print("3. Delete task")
+        print("4. View tasks")
+        print("5. Exit")
+        choice = input("Enter your choice: ")
+        if choice == '1':
+task = input("Enter task: ")
+            add_task(task)
+        elif choice == '2':
+            id = input("Enter task ID: ")
+            task = input("Enter new task: ")
+            edit_task(id, task)
+        elif choice == '3':
+            id = input("Enter task ID: ")
+            delete_task(id)
+        elif choice == '4':
+            print_tasks()
+        elif choice == '5':
+            break
+        else:
+            print("Invalid choice")
+if __name__ == '__main__':
+    main()
